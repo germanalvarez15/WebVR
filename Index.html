@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.9.1/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene id="escena">
+		<a-entity id="player" camera="active: false" position="0 1.6 0" wasd-controls="" rotation="" look-controls="" aframe-injected="" data-aframe-inspector-original-camera="" visible="" collider-check>
+			  <a-entity id= "raycaster" raycaster="objects: .collidable" position="0 -0.9 0" rotation="90 0 0"></a-entity>
+		</a-entity>
+		<a-entity class="collidable" id="Marte" geometry="primitive: sphere" position="0 1.3 -2.745" animation="property: rotation; to: 0 360 0; loop: true; dur: 100000; easing:linear;" material="src: https://raw.githubusercontent.com/germanalvarez15/SolarSystemGVR/master/Assets/Planetas/Marte/mars_1k_color.jpg"  collider-check>
+		</a-entity>
+		<a-entity id="textoPlaneta" text__planeta="align: center; height: 10; value: ; width: 10"></a-entity>
+
+		<a-assets>
+		<img id="sky" src="skybox.jpg">
+		</a-assets>
+
+	  <a-sky src="#sky"></a-sky>
+    </a-scene>
+	  <script>
+
+
+
+AFRAME.registerComponent('collider-check', {
+  dependencies: ['raycaster'],
+
+  init: function () {
+	var ray = document.querySelector('#raycaster');
+	var escena = document.querySelector('#escena');
+	var textoPlaneta;
+	this.el.addEventListener('raycaster-intersection', function () {
+		textoPlaneta = document.getElementById('textoPlaneta');
+
+		if(ray.components.raycaster.objects[0] != null && textoPlaneta != null){
+			
+			console.log(ray.components.raycaster.objects[0].el.id);
+			console.log(ray.components.raycaster.objects[0].parent.position);
+			var posTexto = '0' + " " + (ray.components.raycaster.objects[0].parent.position.y + 1.35) + " " +  '-2.745';
+			console.log(posTexto);
+			textoPlaneta.object3D.visible = true;
+			textoPlaneta.setAttribute('text__planeta',{
+			'value':ray.components.raycaster.objects[0].el.id,
+			'width':5,
+			'align':'center',
+			'color': '#FFF',
+			});
+			textoPlaneta.setAttribute('position',posTexto);
+			textoPlaneta.setAttribute('rotation','0 0 0');
+			textoPlaneta.setAttribute('id','textoMarte' + ray.components.raycaster.objects[0].el.id);
+
+			/*ray.components.raycaster.objects[0].position.set(1, 2, 3);
+			ray.components.raycaster.objects[0].position.x += 5;
+			ray.components.raycaster.objects[0].position.multiplyScalar(5);*/
+			//console.log(ray.components.raycaster.raycaster.objects);
+		}else{
+			console.log("No apunta a nada");
+
+		}
+    });
+  }
+});
+  </script>
+  </body>
+
+</html>
